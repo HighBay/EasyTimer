@@ -1,6 +1,6 @@
 # EasyTimer
 ![Platforms](https://img.shields.io/badge/platforms-ios-lightgrey.svg)
-![Swift version](https://img.shields.io/badge/swift-2.1-orange.svg)
+![Swift version](https://img.shields.io/badge/swift-3-orange.svg)
 [![Build Status](https://travis-ci.org/uacaps/EasyTimer.svg?branch=master)](https://travis-ci.org/uacaps/EasyTimer)
 [![codecov.io](http://codecov.io/github/uacaps/EasyTimer/coverage.svg?branch=master)](http://codecov.io/github/uacaps/EasyTimer?branch=master)
 [![CocoaPods](http://img.shields.io/cocoapods/v/EasyTimer.svg)](https://cocoapods.org/pods/EasyTimer)
