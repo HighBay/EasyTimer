@@ -3,14 +3,14 @@
 //  EasyTimer
 //
 //  Created by Niklas Fahl on 3/2/16.
-//  Copyright © 2016 High Bay. All rights reserved.
+//  Copyright © 2016 Niklas. All rights reserved.
 //
 
 import Foundation
 
 // MARK: - NSTimeInterval Extension for easy timer functionality
 
-extension NSTimeInterval {
+extension TimeInterval {
     /// Create a timer that will call `block` once or repeatedly in specified time intervals.
     ///
     /// - Note: The timer won't fire until it's scheduled on the run loop. To start it use the start function.
@@ -21,7 +21,7 @@ extension NSTimeInterval {
     ///     - delays:   Bool representing if timer executes immediately
     ///     - block:    Code in block will run in every timer repetition.
     /// - returns: A new NSTimer instance
-    func timer(repeats repeats: Bool, delays: Bool, _ block: () -> Void) -> NSTimer {
+    func timer(repeats: Bool, delays: Bool, _ block: @escaping () -> Void) -> Timer {
         if !delays {
             block()
         }
@@ -45,23 +45,23 @@ extension NSTimeInterval {
     ///     - repeats:  Bool representing if timer repeats.
     ///     - block:    Code in block will run in every timer repetition. (NSTimer available as parameter in block)
     /// - returns: A new NSTimer instance
-    func timer(repeats repeats: Bool, delays: Bool, _ block: (NSTimer) -> Void) -> NSTimer {
+    func timer(repeats: Bool, delays: Bool, _ block: @escaping (Timer) -> Void) -> Timer {
         if repeats {
             let timer = CFRunLoopTimerCreateWithHandler(kCFAllocatorDefault, CFAbsoluteTimeGetCurrent() + self, self, 0, 0) { timer in
-                block(timer)
+                block(timer!)
             }
             if !delays {
-                block(timer)
+                block(timer!)
             }
-            return timer
+            return timer!
         } else {
             let timer = CFRunLoopTimerCreateWithHandler(kCFAllocatorDefault, CFAbsoluteTimeGetCurrent() + self, 0, 0, 0) { timer in
-                block(timer)
+                block(timer!)
             }
             if !delays {
-                block(timer)
+                block(timer!)
             }
-            return timer
+            return timer!
         }
     }
     
@@ -70,7 +70,7 @@ extension NSTimeInterval {
     /// - Parameters:
     ///     - block:    Code in `block` will run once after delay.
     /// - returns: A new NSTimer instance
-    public func delay(block: () -> Void) -> NSTimer {
+    public func delay(block: @escaping () -> Void) -> Timer {
         let timer = self.timer(repeats: false, delays: true, block)
         timer.start()
         return timer
@@ -81,7 +81,7 @@ extension NSTimeInterval {
     /// - Parameters:
     ///     - block:    Code in `block` will run once after delay. (NSTimer available as parameter in `block`)
     /// - returns: A new NSTimer instance
-    public func delay(block: (NSTimer) -> Void) -> NSTimer {
+    public func delay(block: @escaping (Timer) -> Void) -> Timer {
         let timer = self.timer(repeats: false, delays: true, block)
         timer.start()
         return timer
@@ -92,7 +92,7 @@ extension NSTimeInterval {
     /// - Parameters:
     ///     - block:    Code in `block` will run in every timer repetition.
     /// - returns: A new NSTimer instance
-    public func interval(block: () -> Void) -> NSTimer {
+    public func interval(block: @escaping () -> Void) -> Timer {
         let timer = self.timer(repeats: true, delays: false, block)
         timer.start()
         return timer
@@ -103,7 +103,7 @@ extension NSTimeInterval {
     /// - Parameters:
     ///     - block:    Code in `block` will run in every timer repetition. (NSTimer available as parameter in `block`)
     /// - returns: A new NSTimer instance
-    public func interval(block: (NSTimer) -> Void) -> NSTimer {
+    public func interval(block: @escaping (Timer) -> Void) -> Timer {
         let timer = self.timer(repeats: true, delays: false, block)
         timer.start()
         return timer
@@ -114,7 +114,7 @@ extension NSTimeInterval {
     /// - Parameters:
     ///     - block:    Code in `block` will run in every timer repetition.
     /// - returns: A new NSTimer instance
-    public func delayedInterval(block: () -> Void) -> NSTimer {
+    public func delayedInterval(block: @escaping () -> Void) -> Timer {
         let timer = self.timer(repeats: true, delays: true, block)
         timer.start()
         return timer
@@ -125,7 +125,7 @@ extension NSTimeInterval {
     /// - Parameters:
     ///     - block:    Code in `block` will run in every timer repetition. (NSTimer available as parameter in `block`)
     /// - returns: A new NSTimer instance
-    public func delayedInterval(block: (NSTimer) -> Void) -> NSTimer {
+    public func delayedInterval(block: @escaping (Timer) -> Void) -> Timer {
         let timer = self.timer(repeats: true, delays: true, block)
         timer.start()
         return timer
@@ -134,29 +134,21 @@ extension NSTimeInterval {
 
 // MARK: - NSTimer Extension for timer start and cancel functionality
 
-extension NSTimer {
+extension Timer {
     /// Schedules this timer on the run loop
     ///
     /// By default, the timer is scheduled on the current run loop for the default mode.
     /// Specify `runLoop` or `modes` to override these defaults.
-    public func start(runLoop runLoop: NSRunLoop = NSRunLoop.currentRunLoop(), modes: String...) {
-        let modes = modes.isEmpty ? [NSDefaultRunLoopMode] : modes
-        
-        for mode in modes {
-            runLoop.addTimer(self, forMode: mode)
-        }
+    public func start(runLoop: RunLoop = RunLoop.current) {
+        runLoop.add(self, forMode: RunLoopMode.defaultRunLoopMode)
     }
     
     /// Remove this timer from the run loop
     ///
     /// By default, the timer is removed from the current run loop for the default mode.
     /// Specify `runLoop` or `modes` to override these defaults.
-    public func stop(runLoop runLoop: NSRunLoop = NSRunLoop.currentRunLoop(), modes: String...) {
+    public func stop(runLoop: RunLoop = RunLoop.current) {
         self.invalidate()
-        let modes = modes.isEmpty ? [NSDefaultRunLoopMode] : modes
-        
-        for mode in modes {
-            CFRunLoopRemoveTimer(runLoop.getCFRunLoop(), self, mode)
-        }
+        CFRunLoopRemoveTimer(runLoop.getCFRunLoop(), self, CFRunLoopMode.defaultMode)
     }
 }

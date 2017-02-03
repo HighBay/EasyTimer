@@ -27,14 +27,14 @@ class EasyTimerTests: XCTestCase {
         let timer = 3.minute.timer(repeats: true, delays: true) {
             // ...
         }
-        XCTAssertTrue(timer.valid)
+        XCTAssertTrue(timer.isValid)
     }
     
     func testTimerCreationPassingTimerInBlock() {
-        let timer = 3.minute.timer(repeats: true, delays: true) { (timer: NSTimer) -> Void in
+        let timer = 3.minute.timer(repeats: true, delays: true) { (timer: Timer) -> Void in
             // ...
         }
-        XCTAssertTrue(timer.valid)
+        XCTAssertTrue(timer.isValid)
     }
     
     // MARK: - Time Interval
@@ -82,7 +82,7 @@ class EasyTimerTests: XCTestCase {
     
     // MARK: - Starting/Stopping Timer
     func testStartNotRepeatingNotDelayingTimer() {
-        let expectation = expectationWithDescription("testStartNotRepeatingNotDelayingTimer")
+        let expectation = self.expectation(description: "testStartNotRepeatingNotDelayingTimer")
         
         let startTimeStamp = CFAbsoluteTimeGetCurrent()
         let timer = 3.second.timer(repeats: false, delays: false) { 
@@ -93,7 +93,7 @@ class EasyTimerTests: XCTestCase {
         }
         timer.start()
         
-        waitForExpectationsWithTimeout(0.02) { error in
+        waitForExpectations(timeout: 0.02) { error in
             if let error = error {
                 print("Error: \(error.localizedDescription)")
             }
@@ -102,13 +102,13 @@ class EasyTimerTests: XCTestCase {
     }
     
     func testStartRepeatingNotDelayingTimer() {
-        let expectation = expectationWithDescription("testStartRepeatingNotDelayingTimer")
+        let expectation = self.expectation(description: "testStartRepeatingNotDelayingTimer")
         
         let startTimeStamp = CFAbsoluteTimeGetCurrent()
         var count = 0
         let timer = 3.second.timer(repeats: true, delays: false) {
             let intervalTime = CFAbsoluteTimeGetCurrent() - startTimeStamp
-            count++
+            count += 1
             
             if count == 2 {
                 let intervalTolerance = abs(3 - intervalTime)
@@ -118,7 +118,7 @@ class EasyTimerTests: XCTestCase {
         }
         timer.start()
         
-        waitForExpectationsWithTimeout(3.02) { error in
+        waitForExpectations(timeout: 3.02) { error in
             if let error = error {
                 print("Error: \(error.localizedDescription)")
             }
@@ -127,7 +127,7 @@ class EasyTimerTests: XCTestCase {
     }
     
     func testStartNotRepeatingDelayingTimer() {
-        let expectation = expectationWithDescription("testStartNotRepeatingDelayingTimer")
+        let expectation = self.expectation(description: "testStartNotRepeatingDelayingTimer")
         
         let startTimeStamp = CFAbsoluteTimeGetCurrent()
         let timer = 3.second.timer(repeats: false, delays: true) {
@@ -138,7 +138,7 @@ class EasyTimerTests: XCTestCase {
         }
         timer.start()
         
-        waitForExpectationsWithTimeout(3.02) { error in
+        waitForExpectations(timeout: 3.02) { error in
             if let error = error {
                 print("Error: \(error.localizedDescription)")
             }
@@ -147,13 +147,13 @@ class EasyTimerTests: XCTestCase {
     }
     
     func testStartRepeatingDelayingTimer() {
-        let expectation = expectationWithDescription("testStartRepeatingDelayingTimer")
+        let expectation = self.expectation(description: "testStartRepeatingDelayingTimer")
         
         let startTimeStamp = CFAbsoluteTimeGetCurrent()
         var count = 0
         let timer = 3.second.timer(repeats: true, delays: true) {
             let intervalTime = CFAbsoluteTimeGetCurrent() - startTimeStamp
-            count++
+            count += 1
             
             if count == 2 {
                 let intervalTolerance = abs(6 - intervalTime)
@@ -163,7 +163,7 @@ class EasyTimerTests: XCTestCase {
         }
         timer.start()
         
-        waitForExpectationsWithTimeout(6.02) { error in
+        waitForExpectations(timeout: 6.02) { error in
             if let error = error {
                 print("Error: \(error.localizedDescription)")
             }
@@ -172,10 +172,10 @@ class EasyTimerTests: XCTestCase {
     }
     
     func testStartNotRepeatingNotDelayingTimerPassingTimerInBlock() {
-        let expectation = expectationWithDescription("testStartNotRepeatingNotDelayingTimerPassingTimerInBlock")
+        let expectation = self.expectation(description: "testStartNotRepeatingNotDelayingTimerPassingTimerInBlock")
         
         let startTimeStamp = CFAbsoluteTimeGetCurrent()
-        let timer = 3.second.timer(repeats: false, delays: false) { (timer: NSTimer) -> Void in
+        let timer = 3.second.timer(repeats: false, delays: false) { (timer: Timer) -> Void in
             let delayTime = CFAbsoluteTimeGetCurrent() - startTimeStamp
             let intervalTolerance = abs(0 - delayTime)
             XCTAssertLessThan(intervalTolerance, 0.02)
@@ -183,7 +183,7 @@ class EasyTimerTests: XCTestCase {
         }
         timer.start()
         
-        waitForExpectationsWithTimeout(0.02) { error in
+        waitForExpectations(timeout: 0.02) { error in
             if let error = error {
                 print("Error: \(error.localizedDescription)")
             }
@@ -192,13 +192,13 @@ class EasyTimerTests: XCTestCase {
     }
     
     func testStartRepeatingNotDelayingTimerPassingTimerInBlock() {
-        let expectation = expectationWithDescription("testStartRepeatingNotDelayingTimerPassingTimerInBlock")
+        let expectation = self.expectation(description: "testStartRepeatingNotDelayingTimerPassingTimerInBlock")
         
         let startTimeStamp = CFAbsoluteTimeGetCurrent()
         var count = 0
-        let timer = 3.second.timer(repeats: true, delays: false) { (timer: NSTimer) -> Void in
+        let timer = 3.second.timer(repeats: true, delays: false) { (timer: Timer) -> Void in
             let intervalTime = CFAbsoluteTimeGetCurrent() - startTimeStamp
-            count++
+            count += 1
             
             if count == 2 {
                 let intervalTolerance = abs(3 - intervalTime)
@@ -208,7 +208,7 @@ class EasyTimerTests: XCTestCase {
         }
         timer.start()
         
-        waitForExpectationsWithTimeout(3.02) { error in
+        waitForExpectations(timeout: 3.02) { error in
             if let error = error {
                 print("Error: \(error.localizedDescription)")
             }
@@ -217,10 +217,10 @@ class EasyTimerTests: XCTestCase {
     }
     
     func testStartNotRepeatingDelayingTimerPassingTimerInBlock() {
-        let expectation = expectationWithDescription("testStartNotRepeatingDelayingTimerPassingTimerInBlock")
+        let expectation = self.expectation(description: "testStartNotRepeatingDelayingTimerPassingTimerInBlock")
         
         let startTimeStamp = CFAbsoluteTimeGetCurrent()
-        let timer = 3.second.timer(repeats: false, delays: true) { (timer: NSTimer) -> Void in
+        let timer = 3.second.timer(repeats: false, delays: true) { (timer: Timer) -> Void in
             let delayTime = CFAbsoluteTimeGetCurrent() - startTimeStamp
             let intervalTolerance = abs(3 - delayTime)
             XCTAssertLessThan(intervalTolerance, 0.02)
@@ -228,7 +228,7 @@ class EasyTimerTests: XCTestCase {
         }
         timer.start()
         
-        waitForExpectationsWithTimeout(3.02) { error in
+        waitForExpectations(timeout: 3.02) { error in
             if let error = error {
                 print("Error: \(error.localizedDescription)")
             }
@@ -237,13 +237,13 @@ class EasyTimerTests: XCTestCase {
     }
     
     func testStartRepeatingDelayingTimerPassingTimerInBlock() {
-        let expectation = expectationWithDescription("testStartRepeatingDelayingTimerPassingTimerInBlock")
+        let expectation = self.expectation(description: "testStartRepeatingDelayingTimerPassingTimerInBlock")
         
         let startTimeStamp = CFAbsoluteTimeGetCurrent()
         var count = 0
-        let timer = 3.second.timer(repeats: true, delays: true) { (timer: NSTimer) -> Void in
+        let timer = 3.second.timer(repeats: true, delays: true) { (timer: Timer) -> Void in
             let intervalTime = CFAbsoluteTimeGetCurrent() - startTimeStamp
-            count++
+            count += 1
             
             if count == 2 {
                 let intervalTolerance = abs(6 - intervalTime)
@@ -253,7 +253,7 @@ class EasyTimerTests: XCTestCase {
         }
         timer.start()
         
-        waitForExpectationsWithTimeout(6.02) { error in
+        waitForExpectations(timeout: 6.02) { error in
             if let error = error {
                 print("Error: \(error.localizedDescription)")
             }
@@ -266,22 +266,22 @@ class EasyTimerTests: XCTestCase {
             // ...
         }
         timer.stop()
-        XCTAssertFalse(timer.valid)
+        XCTAssertFalse(timer.isValid)
     }
     
     // MARK: - Delay
     func testDelay() {
-        let expectation = expectationWithDescription("testDelay")
+        let expectation = self.expectation(description: "testDelay")
         
         let startTimeStamp = CFAbsoluteTimeGetCurrent()
-        2.second.delay {
+        let _ = 2.second.delay {
             let delayTime = CFAbsoluteTimeGetCurrent() - startTimeStamp
             let delayTolerance = abs(2 - delayTime)
             XCTAssertLessThan(delayTolerance, 0.02)
             expectation.fulfill()
         }
         
-        waitForExpectationsWithTimeout(2.02) { error in
+        waitForExpectations(timeout: 2.02) { error in
             if let error = error {
                 print("Error: \(error.localizedDescription)")
             }
@@ -289,17 +289,17 @@ class EasyTimerTests: XCTestCase {
     }
     
     func testDelayPassingTimerInBlock() {
-        let expectation = expectationWithDescription("testDelayPassingTimerInBlock")
+        let expectation = self.expectation(description: "testDelayPassingTimerInBlock")
         
         let startTimeStamp = CFAbsoluteTimeGetCurrent()
-        5.second.delay { (timer: NSTimer) -> Void in
+        let _ = 5.second.delay { (timer: Timer) -> Void in
             let delayTime = CFAbsoluteTimeGetCurrent() - startTimeStamp
             let delayTolerance = abs(5 - delayTime)
             XCTAssertLessThan(delayTolerance, 0.02)
             expectation.fulfill()
         }
         
-        waitForExpectationsWithTimeout(5.02) { error in
+        waitForExpectations(timeout: 5.02) { error in
             if let error = error {
                 print("Error: \(error.localizedDescription)")
             }
@@ -307,14 +307,14 @@ class EasyTimerTests: XCTestCase {
     }
     
     func testTimerInDelayBlock() {
-        let expectation = expectationWithDescription("testTimerInDelayBlock")
+        let expectation = self.expectation(description: "testTimerInDelayBlock")
         
-        5.second.delay { (timer: NSTimer) -> Void in
-            XCTAssertTrue(timer.valid)
+        let _ = 5.second.delay { (timer: Timer) -> Void in
+            XCTAssertTrue(timer.isValid)
             expectation.fulfill()
         }
         
-        waitForExpectationsWithTimeout(5.02) { error in
+        waitForExpectations(timeout: 5.02) { error in
             if let error = error {
                 print("Error: \(error.localizedDescription)")
             }
@@ -323,13 +323,13 @@ class EasyTimerTests: XCTestCase {
     
     // MARK: - Interval
     func testInterval() {
-        let expectation = expectationWithDescription("testInterval")
+        let expectation = self.expectation(description: "testInterval")
         
         let startTimeStamp = CFAbsoluteTimeGetCurrent()
         var count = 0
-        3.second.interval {
+        let _ = 3.second.interval {
             let intervalTime = CFAbsoluteTimeGetCurrent() - startTimeStamp
-            count++
+            count += 1
             
             if count == 2 {
                 let intervalTolerance = abs(3 - intervalTime)
@@ -338,7 +338,7 @@ class EasyTimerTests: XCTestCase {
             }
         }
         
-        waitForExpectationsWithTimeout(3.02) { error in
+        waitForExpectations(timeout: 3.02) { error in
             if let error = error {
                 print("Error: \(error.localizedDescription)")
             }
@@ -346,13 +346,13 @@ class EasyTimerTests: XCTestCase {
     }
     
     func testIntervalPassingTimerInBlock() {
-        let expectation = expectationWithDescription("testIntervalPassingTimerInBlock")
+        let expectation = self.expectation(description: "testIntervalPassingTimerInBlock")
         
         let startTimeStamp = CFAbsoluteTimeGetCurrent()
         var count = 0
-        3.second.interval { (timer: NSTimer) -> Void in
+        let _ = 3.second.interval { (timer: Timer) -> Void in
             let intervalTime = CFAbsoluteTimeGetCurrent() - startTimeStamp
-            count++
+            count += 1
             
             if count == 2 {
                 let intervalTolerance = abs(3 - intervalTime)
@@ -361,7 +361,7 @@ class EasyTimerTests: XCTestCase {
             }
         }
         
-        waitForExpectationsWithTimeout(3.02) { error in
+        waitForExpectations(timeout: 3.02) { error in
             if let error = error {
                 print("Error: \(error.localizedDescription)")
             }
@@ -369,14 +369,14 @@ class EasyTimerTests: XCTestCase {
     }
     
     func testTimerInIntervalBlock() {
-        let expectation = expectationWithDescription("testTimerInIntervalBlock")
+        let expectation = self.expectation(description: "testTimerInIntervalBlock")
         
-        5.second.interval { (timer: NSTimer) -> Void in
-            XCTAssertTrue(timer.valid)
+        let _ = 5.second.interval { (timer: Timer) -> Void in
+            XCTAssertTrue(timer.isValid)
             expectation.fulfill()
         }
         
-        waitForExpectationsWithTimeout(0.02) { error in
+        waitForExpectations(timeout: 0.02) { error in
             if let error = error {
                 print("Error: \(error.localizedDescription)")
             }
@@ -385,13 +385,13 @@ class EasyTimerTests: XCTestCase {
     
     // MARK: - Delayed Interval
     func testDelayedInterval() {
-        let expectation = expectationWithDescription("testDelayedInterval")
+        let expectation = self.expectation(description: "testDelayedInterval")
         
         let startTimeStamp = CFAbsoluteTimeGetCurrent()
         var count = 0
-        3.second.delayedInterval {
+        let _ = 3.second.delayedInterval {
             let intervalTime = CFAbsoluteTimeGetCurrent() - startTimeStamp
-            count++
+            count += 1
             
             if count == 2 {
                 let intervalTolerance = abs(6 - intervalTime)
@@ -400,7 +400,7 @@ class EasyTimerTests: XCTestCase {
             }
         }
         
-        waitForExpectationsWithTimeout(6.02) { error in
+        waitForExpectations(timeout: 6.02) { error in
             if let error = error {
                 print("Error: \(error.localizedDescription)")
             }
@@ -408,13 +408,13 @@ class EasyTimerTests: XCTestCase {
     }
     
     func testDelayedIntervalPassingTimerInBlock() {
-        let expectation = expectationWithDescription("testDelayedIntervalPassingTimerInBlock")
+        let expectation = self.expectation(description: "testDelayedIntervalPassingTimerInBlock")
         
         let startTimeStamp = CFAbsoluteTimeGetCurrent()
         var count = 0
-        3.second.delayedInterval { (timer: NSTimer) -> Void in
+        let _ = 3.second.delayedInterval { (timer: Timer) -> Void in
             let intervalTime = CFAbsoluteTimeGetCurrent() - startTimeStamp
-            count++
+            count += 1
             
             if count == 2 {
                 let intervalTolerance = abs(6 - intervalTime)
@@ -423,7 +423,7 @@ class EasyTimerTests: XCTestCase {
             }
         }
         
-        waitForExpectationsWithTimeout(6.02) { error in
+        waitForExpectations(timeout: 6.02) { error in
             if let error = error {
                 print("Error: \(error.localizedDescription)")
             }
@@ -431,14 +431,14 @@ class EasyTimerTests: XCTestCase {
     }
     
     func testTimerInDelayedIntervalBlock() {
-        let expectation = expectationWithDescription("testTimerInDelayedIntervalBlock")
+        let expectation = self.expectation(description: "testTimerInDelayedIntervalBlock")
         
-        5.second.delayedInterval { (timer: NSTimer) -> Void in
-            XCTAssertTrue(timer.valid)
+        let _ = 5.second.delayedInterval { (timer: Timer) -> Void in
+            XCTAssertTrue(timer.isValid)
             expectation.fulfill()
         }
         
-        waitForExpectationsWithTimeout(5.02) { error in
+        waitForExpectations(timeout: 5.02) { error in
             if let error = error {
                 print("Error: \(error.localizedDescription)")
             }

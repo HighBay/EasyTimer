@@ -17,11 +17,11 @@ class ViewController: UIViewController {
         // EXAMPLES
         
         // Repeat but also execute once immediately
-        2.second.interval {
+        let _ = 2.second.interval {
             print("Repeat every 2 seconds but also execute once right away.")
         }
         
-        2.second.interval { (timer: NSTimer) -> Void in
+        let _ = 2.second.interval { (timer: Timer) -> Void in
             print("Repeat every 2 seconds but also execute once right away.")
         }
         
@@ -32,7 +32,7 @@ class ViewController: UIViewController {
         timer2.stop()
         
         // Delay something
-        2.second.delay { () -> Void in
+        let _ = 2.second.delay { () -> Void in
             print("2 seconds later...")
         }
         
