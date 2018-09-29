@@ -140,7 +140,7 @@ extension Timer {
     /// By default, the timer is scheduled on the current run loop for the default mode.
     /// Specify `runLoop` or `modes` to override these defaults.
     public func start(runLoop: RunLoop = RunLoop.current) {
-        runLoop.add(self, forMode: RunLoopMode.defaultRunLoopMode)
+        runLoop.add(self, forMode: RunLoop.Mode.default)
     }
     
     /// Remove this timer from the run loop
